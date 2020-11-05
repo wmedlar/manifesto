@@ -96,7 +96,7 @@ core.List([
             },
             template: {
                 metadata: {
-                    labels: deployment.spec.selector.matchLabels + {
+                    labels: deployment.spec.selector.matchLabels {
                         'app.kubernetes.io/version': 'v0.3.7',
                     },
                 },
