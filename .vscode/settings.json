@@ -1,0 +1,8 @@
+{
+    "files.exclude": {
+        "bazel-bin": true,
+        "bazel-manifesto": true,
+        "bazel-out": true,
+        "bazel-testlogs": true,
+    }
+}
