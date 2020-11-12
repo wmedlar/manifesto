@@ -1,5 +1,6 @@
 workspace(name = "manifesto")
 
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -10,16 +11,19 @@ http_archive(
 )
 
 load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_repositories")
-
 jsonnet_repositories()
 
 load("@jsonnet_go//bazel:repositories.bzl", "jsonnet_go_repositories")
-
 jsonnet_go_repositories()
 
 load("@jsonnet_go//bazel:deps.bzl", "jsonnet_go_dependencies")
-
 jsonnet_go_dependencies()
+
+git_repository(
+    name = "com_github_yugui_jsonnetunit",
+    remote = "https://github.com/yugui/jsonnetunit.git",
+    tag = "v0.2.0",
+)
 
 http_archive(
     name = "io_bazel_rules_k8s",
@@ -29,9 +33,7 @@ http_archive(
 )
 
 load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
-
 k8s_repositories()
 
-load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
-
-k8s_go_deps()
+load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_dependencies = "deps")
+k8s_go_dependencies()
