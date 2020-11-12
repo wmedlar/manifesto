@@ -8,7 +8,8 @@ jsonnetfmt_flags += --no-pad-objects
 .PHONY: fmt
 fmt: $(jsonnet_files)
 
-$(jsonnet_files): FORCE
-	jsonnetfmt $(jsonnetfmt_flags) -- "$@"
+.PHONY: $(jsonnet_files)
+$(jsonnet_files):
+	@- jsonnetfmt $(jsonnetfmt_flags) -- "$@"
 
 FORCE: ;
