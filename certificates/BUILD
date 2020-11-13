@@ -8,6 +8,7 @@ k8s_objects(
         ":custom-resource-definitions",
         ":cainjector",
         ":controller",
+        ":rbac",
     ],
 )
 
@@ -29,6 +30,12 @@ k8s_object(
     context  = None,
 )
 
+k8s_object(
+    name     = "rbac",
+    template = ":rbac.manifest",
+    context  = None,
+)
+
 jsonnet_to_json(
     name = "cainjector.manifest",
     src  = "cainjector.jsonnet",
@@ -40,5 +47,12 @@ jsonnet_to_json(
     name = "controller.manifest",
     src  = "controller.jsonnet",
     outs = ["controller.json"],
+    deps = ["@manifesto//lib"],
+)
+
+jsonnet_to_json(
+    name = "rbac.manifest",
+    src  = "rbac.jsonnet",
+    outs = ["rbac.json"],
     deps = ["@manifesto//lib"],
 )
