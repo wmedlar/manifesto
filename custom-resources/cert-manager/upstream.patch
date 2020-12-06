@@ -1,0 +1,12 @@
+diff --git deploy/crds/BUILD.bazel deploy/crds/BUILD.bazel
+index 7308e1232..008c7fd88 100644
+--- deploy/crds/BUILD.bazel
++++ deploy/crds/BUILD.bazel
+@@ -20,6 +20,7 @@ concat_files(
+     name = "templates.regular",
+     srcs = [":crd-%s.yaml" % crd for crd in crds],
+     separator = "---",
++    out = "crds.yaml",
+     visibility = ["//visibility:public"],
+ )
+ 

@@ -1,0 +1,20 @@
+load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_library")
+
+jsonnet_library(
+    name = "lib",
+    deps = [":contrib", ":kube"],
+    visibility = ["@manifesto//:__subpackages__"],
+)
+
+jsonnet_library(
+    name = "contrib",
+    srcs = ["contrib.libsonnet"] + glob(["contrib/*.libsonnet"]),
+    deps = [":kube"],
+    visibility = ["//:__subpackages__"],
+)
+
+jsonnet_library(
+    name = "kube",
+    srcs = ["kube.libsonnet"] + glob(["kube/*.libsonnet"]),
+    visibility = ["//:__subpackages__"],
+)
