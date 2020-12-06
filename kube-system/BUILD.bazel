@@ -1,0 +1,13 @@
+load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
+load("@manifesto//:macros.bzl", "k8s_manifests")
+
+k8s_objects(
+    name = "kube-system",
+    objects = [":metrics-server"],
+    visibility = ["@manifesto//:__subpackages__"],
+)
+
+k8s_manifests(
+    name = "metrics-server",
+    src = "metrics-server.jsonnet",
+)

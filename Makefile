@@ -1,5 +1,5 @@
-jsonnet_files := $(wildcard *.jsonnet)   $(wildcard */*.jsonnet)
-jsonnet_files += $(wildcard *.libsonnet) $(wildcard */*.libsonnet)
+jsonnet_files := $(wildcard */*.jsonnet)   $(wildcard */*/*.jsonnet)
+jsonnet_files += $(wildcard */*.libsonnet) $(wildcard */*/*.libsonnet)
 
 jsonnetfmt_flags := --in-place
 jsonnetfmt_flags += --indent 4
