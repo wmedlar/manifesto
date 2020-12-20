@@ -1,8 +1,8 @@
 name: build
 on: push
 jobs:
-  bazel-build:
-    name: bazel build
+  bazel:
+    name: bazel
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
