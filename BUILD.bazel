@@ -3,6 +3,7 @@ load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 k8s_objects(
     name = "manifesto",
     objects = [
+        "@manifesto//custom-resources:custom-resources",
         "@manifesto//certificates:certificates",
         "@manifesto//kube-system:kube-system",
     ],
