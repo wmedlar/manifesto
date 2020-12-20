@@ -1,12 +1,26 @@
-diff --git deploy/crds/BUILD.bazel deploy/crds/BUILD.bazel
-index 7308e1232..008c7fd88 100644
---- deploy/crds/BUILD.bazel
-+++ deploy/crds/BUILD.bazel
-@@ -20,6 +20,7 @@ concat_files(
-     name = "templates.regular",
-     srcs = [":crd-%s.yaml" % crd for crd in crds],
-     separator = "---",
-+    out = "crds.yaml",
+diff --git BUILD.bazel BUILD.bazel
+index 09d7b691e..3ca3f0718 100644
+--- BUILD.bazel
++++ BUILD.bazel
+@@ -17,7 +17,7 @@ exports_files([
+ genrule(
+     name = "save_docker_version",
+     outs = ["version"],
+-    cmd = "grep '^STABLE_DOCKER_TAG ' bazel-out/stable-status.txt | awk '{print $$2}' >$@",
++    cmd = "echo 1.1.0 > $@",
+     stamp = 1,
      visibility = ["//visibility:public"],
  )
- 
+diff --git deploy/manifests/BUILD.bazel deploy/manifests/BUILD.bazel
+index 9350a577f..02490dd45 100644
+--- deploy/manifests/BUILD.bazel
++++ deploy/manifests/BUILD.bazel
+@@ -37,7 +37,7 @@ VARIANTS = {
+     srcs = [
+         "//deploy/crds:crds.%s" % meta["crd_variant"],
+     ],
+-    outs = ["%s.crds.nohelm.out" % name],
++    outs = ["%s.crds.nohelm.out.yaml" % name],
+     cmd = " ".join([
+         "$(location //hack/filter-crd)",
+         "-variant=no-helm",

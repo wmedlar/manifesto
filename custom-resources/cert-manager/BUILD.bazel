@@ -7,11 +7,12 @@ k8s_objects(
         ":crd",
         ":rbac",
     ],
+    visibility = ["@manifesto//:__subpackages__"],
 )
 
 k8s_manifests(
     name = "crd",
-    src = "@cert-manager//deploy/crds:templates.regular",
+    src = "@cert-manager//deploy/manifests:cert-manager.nohelm.crds.yaml",
 )
 
 k8s_manifests(name = "rbac")
