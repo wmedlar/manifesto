@@ -4,15 +4,7 @@ load("@manifesto//custom-resources:repos.bzl", "custom_resources_repositories")
 load("@manifesto//lib:repos.bzl", "lib_repositories")
 
 def manifesto_repositories():
-    bazel_skylib_repositorites()
-    rules_jsonnet_repositories()
-    rules_k8s_repositories()
-
-    custom_resources_repositories()
-    lib_repositories()
-
-
-def bazel_skylib_repositorites():
+    # bazel_skylib repositories
     http_archive(
         name = "bazel_skylib",
         urls = [
@@ -22,16 +14,15 @@ def bazel_skylib_repositorites():
         sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
     )
 
-
-def rules_jsonnet_repositories():
+    # rules_jsonnet repositories
     http_archive(
         name = "io_bazel_rules_jsonnet",
         sha256 = "7f51f859035cd98bcf4f70dedaeaca47fe9fbae6b199882c516d67df416505da",
         strip_prefix = "rules_jsonnet-0.3.0",
         urls = ["https://github.com/bazelbuild/rules_jsonnet/archive/0.3.0.tar.gz"],
     )
-
-    # copied from https://github.com/bazelbuild/rules_jsonnet/blob/0.3.0/jsonnet/jsonnet.bzl
+    # the following are copied from:
+    # https://github.com/bazelbuild/rules_jsonnet/blob/0.3.0/jsonnet/jsonnet.bzl
     http_archive(
         name = "jsonnet",
         sha256 = "0b58f2a36a5625c717e717a7e85608730e7bb5bfd8be1765dd6fa23be1f9b9e8",
@@ -48,16 +39,15 @@ def rules_jsonnet_repositories():
         init_submodules = True,
     )
 
-
-def rules_k8s_repositories():
+    # rules_k8s repositories
     http_archive(
         name = "io_bazel_rules_k8s",
         strip_prefix = "rules_k8s-0.6",
         urls = ["https://github.com/bazelbuild/rules_k8s/archive/v0.6.tar.gz"],
         sha256 = "51f0977294699cd547e139ceff2396c32588575588678d2054da167691a227ef",
     )
-
-    # copied from https://github.com/bazelbuild/rules_k8s/blob/v0.6/k8s/k8s.bzl
+    # the following are copied from:
+    # https://github.com/bazelbuild/rules_k8s/blob/v0.6/k8s/k8s.bzl
     http_archive(
         name = "io_bazel_rules_go",
         sha256 = "08c3cd71857d58af3cda759112437d9e63339ac9c6e0042add43f4d94caf632d",
@@ -80,3 +70,7 @@ def rules_k8s_repositories():
         strip_prefix = "rules_docker-0.14.3",
         urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.3/rules_docker-v0.14.3.tar.gz"],
     )
+
+    # subpackage repositories
+    custom_resources_repositories()
+    lib_repositories()
