@@ -1,40 +1,39 @@
-local contrib = import 'lib/contrib.libsonnet';
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 local namespace = 'kube-system';
 local name = 'metrics-server';
 
-local ServiceAccount = kube.ServiceAccount(namespace, name);
+local ServiceAccount = k8s.core.ServiceAccount(namespace, name);
 local ClusterRole =
-    kube.ClusterRole('system:%s' % name)
+    k8s.rbac.ClusterRole('system:%s' % name)
     .WithRule([''], ['configmaps', 'namespaces', 'nodes', 'nodes/stats', 'pods'], ['get', 'list', 'watch'])
     .WithRule(['authentication.k8s.io'], ['tokenreviews'], ['create'])
     .WithRule(['authorization.k8s.io'], ['subjectaccessreviews'], ['create'])
 ;
 local ClusterRoleBinding =
-    kube.ClusterRoleBinding()
+    k8s.rbac.ClusterRoleBinding()
     .WithRole(ClusterRole)
     .WithSubject(ServiceAccount)
 ;
 local RoleBinding =
-    kube.RoleBinding(namespace, 'system:%s' % name)
-    .WithRole(kube.Role(namespace, 'extension-apiserver-authentication-reader'))
+    k8s.rbac.RoleBinding(namespace, 'system:%s' % name)
+    .WithRole(k8s.rbac.Role(namespace, 'extension-apiserver-authentication-reader'))
     .WithSubject(ServiceAccount)
 ;
 local Certificate =
-    contrib.Certificate(namespace, name)
+    k8s.ext.certmanager.Certificate(namespace, name)
     .WithDNSNames([
         name,
         '%s.%s.svc' % [name, namespace],
         '%s.%s.svc.cluster.local' % [name, namespace],
     ])
     .WithDuration(days=30)
-    .WithIssuer(contrib.ClusterIssuer('internal'))
+    .WithIssuer(k8s.ext.certmanager.ClusterIssuer('internal'))
     .WithSecretName('%s-tls' % name)
 ;
 local Deployment =
-    kube.Deployment(namespace, name)
+    k8s.apps.Deployment(namespace, name)
     .WithContainer(
-        kube.Container(name)
+        k8s.core.Container(name)
         .WithImage('k8s.gcr.io/metrics-server/metrics-server', 'v0.3.7')
         .WithArgs([
             '--kubelet-preferred-address-types=InternalIP',
@@ -54,20 +53,20 @@ local Deployment =
     .WithVolume({name: 'tmp', emptyDir: {}})
 ;
 local Service =
-    kube.Service(namespace, name)
+    k8s.core.Service(namespace, name)
     .WithLabel('kubernetes.io/cluster-service', 'true')
     .WithLabel('kubernetes.io/name', name)
     .WithPort('https', 443, 6443)
     .WithSelector(Deployment.spec.selector.matchLabels)
 ;
 local APIService =
-    kube.APIService('metrics.k8s.io', 'v1beta1')
+    k8s.apiregistration.APIService('metrics.k8s.io', 'v1beta1')
     .WithAnnotation('cert-manager.io/inject-ca-from', Certificate.metadata.namespace + '/' + Certificate.metadata.name)
     .WithPriority(100)
     .WithService(Service)
 ;
 
-kube.List([
+k8s.core.List([
     ServiceAccount,
     ClusterRole,
     ClusterRoleBinding,

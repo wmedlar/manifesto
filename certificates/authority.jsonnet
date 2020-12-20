@@ -1,18 +1,17 @@
-local contrib = import 'lib/contrib.libsonnet';
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 local namespace = 'certificates';
 
 // This Secret doesn't get deployed, it's only created here to reference throughout.
-local Secret = kube.Secret(namespace, 'internal-ca');
+local Secret = k8s.core.Secret(namespace, 'internal-ca');
 
 // The bootstrap Issuer is used to generate a self-signed certificate to act as a
 // certificate authority and the root of trust between applications in the cluster.
 local Issuer =
-    contrib.Issuer(namespace, 'bootstrap')
+    k8s.ext.certmanager.Issuer(namespace, 'bootstrap')
     .WithSelfSigningCertificates()
 ;
 local Certificate =
-    contrib.Certificate(namespace, 'internal-ca')
+    k8s.ext.certmanager.Certificate(namespace, 'internal-ca')
     .WithCommonName('Manifesto Internal Authority')
     .WithDuration(years=10)
     .WithIssuer(Issuer)
@@ -23,11 +22,11 @@ local Certificate =
 // The bootstrapped certificate authority is used by the internal ClusterIssuer to sign
 // TLS certificates for applications in the cluster.
 local ClusterIssuer =
-    contrib.ClusterIssuer('internal')
+    k8s.ext.certmanager.ClusterIssuer('internal')
     .WithKeypairSecret(Secret)
 ;
 
-kube.List([
+k8s.core.List([
     Issuer,
     Certificate,
     ClusterIssuer,

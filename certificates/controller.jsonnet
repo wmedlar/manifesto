@@ -1,33 +1,33 @@
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 local namespace = 'certificates';
 local name = 'controller';
 
-local ServiceAccount = kube.ServiceAccount(namespace, name);
+local ServiceAccount = k8s.core.ServiceAccount(namespace, name);
 local ClusterRole =
-    kube.ClusterRole('%s:%s' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s' % [namespace, name])
     .WithAggregationSelector({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
 ;
 local ClusterRoleBinding =
-    kube.ClusterRoleBinding()
+    k8s.rbac.ClusterRoleBinding()
     .WithRole(ClusterRole)
     .WithSubject(ServiceAccount)
 ;
 local AggregatedClusterRoles = [
-    kube.ClusterRole('%s:%s:issuers' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s:issuers' % [namespace, name])
     .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
     .WithRule([''], ['secrets'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['cert-manager.io'], ['issuers'], ['get', 'list', 'watch'])
     .WithRule(['cert-manager.io'], ['issuers', 'issuers/status'], ['update']),
 
-    kube.ClusterRole('%s:%s:clusterissuers' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s:clusterissuers' % [namespace, name])
     .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
     .WithRule([''], ['secrets'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['cert-manager.io'], ['clusterissuers'], ['get', 'list', 'watch'])
     .WithRule(['cert-manager.io'], ['clusterissuers', 'clusterissuers/status'], ['update']),
 
-    kube.ClusterRole('%s:%s:certificates' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s:certificates' % [namespace, name])
     .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
     .WithRule([''], ['secrets'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
@@ -36,7 +36,7 @@ local AggregatedClusterRoles = [
     .WithRule(['cert-manager.io'], ['certificates', 'certificates/status', 'certificaterequests', 'certificaterequests/status'], ['update'])
     .WithRule(['cert-manager.io'], ['certificates/finalizers', 'certificaterequests/finalizers'], ['update']),
 
-    kube.ClusterRole('%s:%s:orders' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s:orders' % [namespace, name])
     .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
     .WithRule([''], ['secrets'], ['get', 'list', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
@@ -46,7 +46,7 @@ local AggregatedClusterRoles = [
     .WithRule(['acme.cert-manager.io'], ['orders/finalizers'], ['update'])
     .WithRule(['cert-manager.io'], ['clusterissuers', 'issuers'], ['get', 'list', 'watch']),
 
-    kube.ClusterRole('%s:%s:challenges' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s:challenges' % [namespace, name])
     .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
     .WithRule([''], ['pods', 'services'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['secrets'], ['get', 'list', 'watch'])
@@ -56,7 +56,7 @@ local AggregatedClusterRoles = [
     .WithRule(['acme.cert-manager.io'], ['challenges', 'challenges/status', 'challenges/finalizers'], ['update'])
     .WithRule(['cert-manager.io'], ['clusterissuers', 'issuers'], ['get', 'list', 'watch']),
 
-    kube.ClusterRole('%s:%s:ingress-shim' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s:ingress-shim' % [namespace, name])
     .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['extensions', 'networking.k8s.io'], ['ingresses'], ['get', 'list', 'watch'])
@@ -65,9 +65,9 @@ local AggregatedClusterRoles = [
     .WithRule(['cert-manager.io'], ['certificates', 'certificaterequests', 'clusterissuers', 'issuers'], ['get', 'list', 'watch']),
 ];
 local Deployment =
-    kube.Deployment(namespace, name)
+    k8s.apps.Deployment(namespace, name)
     .WithContainer(
-        kube.Container(name)
+        k8s.core.Container(name)
         .WithImage('quay.io/jetstack/cert-manager-controller', 'v1.0.4')
         .WithArgs([
             '--cluster-resource-namespace=$(POD_NAMESPACE)',
@@ -83,12 +83,12 @@ local Deployment =
     .WithServiceAccount(ServiceAccount)
 ;
 local Service =
-    kube.Service(namespace, name)
+    k8s.core.Service(namespace, name)
     .WithPort('metrics', 9042)
     .WithSelector(Deployment.spec.selector.matchLabels)
 ;
 
-kube.List([
+k8s.core.List([
     ServiceAccount,
     ClusterRole,
     ClusterRoleBinding,

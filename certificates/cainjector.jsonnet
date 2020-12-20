@@ -1,10 +1,10 @@
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 local namespace = 'certificates';
 local name = 'cainjector';
 
-local ServiceAccount = kube.ServiceAccount(namespace, name);
+local ServiceAccount = k8s.core.ServiceAccount(namespace, name);
 local ClusterRole =
-    kube.ClusterRole('%s:%s' % [namespace, name])
+    k8s.rbac.ClusterRole('%s:%s' % [namespace, name])
     .WithRule([''], ['secrets'], ['get', 'list', 'watch'])
     .WithRule([''], ['events'], ['create', 'get', 'patch', 'update'])
     .WithRule(['admissionregistration.k8s.io'], ['validatingwebhookconfigurations', 'mutatingwebhookconfigurations'], ['get', 'list', 'update', 'watch'])
@@ -14,14 +14,14 @@ local ClusterRole =
     .WithRule(['cert-manager.io'], ['certificates'], ['get', 'list', 'watch'])
 ;
 local ClusterRoleBinding =
-    kube.ClusterRoleBinding()
+    k8s.rbac.ClusterRoleBinding()
     .WithRole(ClusterRole)
     .WithSubject(ServiceAccount)
 ;
 local Deployment =
-    kube.Deployment(namespace, name)
+    k8s.apps.Deployment(namespace, name)
     .WithContainer(
-        kube.Container(name)
+        k8s.core.Container(name)
         .WithImage('quay.io/jetstack/cert-manager-cainjector', 'v1.0.4')
         .WithArg('--leader-elect=false')
     )
@@ -31,7 +31,7 @@ local Deployment =
     .WithStrategy('Recreate')
 ;
 
-kube.List([
+k8s.core.List([
     ServiceAccount,
     ClusterRole,
     ClusterRoleBinding,
