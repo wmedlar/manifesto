@@ -1,18 +1,10 @@
-load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
-load("@manifesto//:macros.bzl", "k8s_manifests")
-
-k8s_objects(
-    name = "cert-manager",
-    objects = [
-        ":crd",
-        ":rbac",
-    ],
-    visibility = ["@manifesto//:__subpackages__"],
-)
+load("@manifesto//bazel:macros.bzl", "k8s_manifest", "k8s_manifests")
 
 k8s_manifests(
-    name = "crd",
-    src = "@cert-manager//deploy/manifests:cert-manager.nohelm.crds.yaml",
+    name = "cert-manager",
+    objects = [
+        k8s_manifest(name = "crds", src = "@cert-manager//deploy/manifests:cert-manager.nohelm.crds.yaml"),
+        k8s_manifest(name = "rbac", src = "rbac.jsonnet"),
+    ],
+    visibility = ["@manifesto//custom-resources:__pkg__"],
 )
-
-k8s_manifests(name = "rbac")
