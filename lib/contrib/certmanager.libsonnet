@@ -16,6 +16,9 @@ local object(kind, namespace, name) =
         WithCommonName(name)::
             self + {spec+: {commonName: name}},
 
+        WithDNSNames(names)::
+            self + {spec+: {dnsNames: names}},
+
         WithDuration(days=0, years=0)::
             local hours = 24 * (days + (365 * years));
             self + {spec+: {duration: '%sh' % hours}},
@@ -29,6 +32,9 @@ local object(kind, namespace, name) =
 
         WithSecret(secret)::
             self + {spec+: {secretName: secret.metadata.name}},
+
+        WithSecretName(name)::
+            self + {spec+: {secretName: name}},
     },
 
     ClusterIssuer(name):: object('ClusterIssuer', null, name) {

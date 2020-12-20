@@ -17,11 +17,6 @@ local object(kind, namespace, name) =
                 containers+: [container],
             }}}},
 
-        WithEmptyVolume(name)::
-            self + {spec+: {template+: {spec+: {
-                volumes+: [{name: name, emptyDir: {}}],
-            }}}},
-
         WithReplicas(count)::
             self + {spec+: {replicas: count}},
 
@@ -47,6 +42,12 @@ local object(kind, namespace, name) =
                     sysctls+: [{name: name, value: std.toString(value)}],
                 },
             }}}},
+
+        WithVolume(volume)::
+            self + {spec+: {template+: {spec+: {volumes+: [volume]}}}},
+
+        WithVolumes(volumes)::
+            self + {spec+: {template+: {spec+: {volumes: volumes}}}},
     },
 
     DaemonSet(namespace, name):: $.controller('DaemonSet', namespace, name) {
