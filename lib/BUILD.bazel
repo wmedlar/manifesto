@@ -2,19 +2,18 @@ load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_library")
 
 jsonnet_library(
     name = "lib",
-    deps = [":contrib", ":kube"],
+    srcs = ["k8s.libsonnet"],
+    deps = [":api", ":ext"],
     visibility = ["@manifesto//:__subpackages__"],
 )
 
 jsonnet_library(
-    name = "contrib",
-    srcs = ["contrib.libsonnet"] + glob(["contrib/*.libsonnet"]),
-    deps = [":kube"],
-    visibility = ["//:__subpackages__"],
+    name = "api",
+    srcs = glob(["api/*.libsonnet"]),
 )
 
 jsonnet_library(
-    name = "kube",
-    srcs = ["kube.libsonnet"] + glob(["kube/*.libsonnet"]),
-    visibility = ["//:__subpackages__"],
+    name = "ext",
+    srcs = glob(["ext/*.libsonnet"]),
+    deps = [":api"],
 )

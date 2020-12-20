@@ -1,10 +1,10 @@
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 
 local group = 'cert-manager.io';
 local version = 'v1';
 
 local object(kind, namespace, name) =
-    kube.Object(group, version, kind, namespace, name);
+    k8s.meta.Object(group, version, kind, namespace, name);
 
 {
     Group:: group,
