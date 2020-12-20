@@ -1,0 +1,13 @@
+name: build
+on: push
+jobs:
+  bazel-build:
+    name: bazel build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        key: bazel
+        path: ~/.cache/bazel
+    - run: bazel build ...
