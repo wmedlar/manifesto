@@ -1,8 +1,8 @@
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 local namespace = 'certificates';
 
 local ClusterRoleView =
-    kube.ClusterRole('%s:view' % namespace)
+    k8s.rbac.ClusterRole('%s:view' % namespace)
     .WithLabel('rbac.authorization.k8s.io/aggregate-to-admin', 'true')
     .WithLabel('rbac.authorization.k8s.io/aggregate-to-edit', 'true')
     .WithLabel('rbac.authorization.k8s.io/aggregate-to-view', 'true')
@@ -13,7 +13,7 @@ local ClusterRoleView =
     )
 ;
 local ClusterRoleEdit =
-    kube.ClusterRole('%s:edit' % namespace)
+    k8s.rbac.ClusterRole('%s:edit' % namespace)
     .WithLabel('rbac.authorization.k8s.io/aggregate-to-admin', 'true')
     .WithLabel('rbac.authorization.k8s.io/aggregate-to-edit', 'true')
     .WithRule(
@@ -23,7 +23,7 @@ local ClusterRoleEdit =
     )
 ;
 
-kube.List([
+k8s.core.List([
     ClusterRoleView,
     ClusterRoleEdit,
 ])

@@ -1,3 +1,3 @@
-local kube = import 'lib/kube.libsonnet';
+local k8s = import 'lib/k8s.libsonnet';
 
-kube.Namespace('$name')
+k8s.core.Namespace('$name')
