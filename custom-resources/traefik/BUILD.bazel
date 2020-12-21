@@ -1,0 +1,10 @@
+load("@manifesto//bazel:macros.bzl", "k8s_manifest", "k8s_manifests")
+
+k8s_manifests(
+    name = "traefik",
+    objects = [
+        k8s_manifest(name = "crds", src = "@traefik//:crds"),
+        k8s_manifest(name = "rbac", src = "rbac.jsonnet"),
+    ],
+    visibility = ["@manifesto//custom-resources:__pkg__"],
+)
