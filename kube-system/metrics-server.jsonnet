@@ -43,7 +43,7 @@ local Deployment =
         ])
         .WithPort('https', 6443)
         .WithReadOnlyFilesystem()
-        .WithUser(1000)
+        .WithUserID(1000)
         .WithVolumeMount('tls', '/certs')
         .WithVolumeMount('tmp', '/tmp')
     )

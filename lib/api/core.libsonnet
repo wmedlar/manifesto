@@ -28,6 +28,11 @@ local object(kind, namespace, name) =
                 capabilities+: {add+: [cap], drop: ['all']},
             }},
 
+        WithCapabilities(caps)::
+            self + {securityContext+: {
+                capabilities+: {add: caps, drop: ['all']},
+            }},
+
         WithEnv(name, value)::
             self + {env+: [{name: name, value: value}]},
 
@@ -36,6 +41,9 @@ local object(kind, namespace, name) =
                 name: name,
                 valueFrom: {fieldRef: {fieldPath: field}},
             }]},
+
+        WithGroupID(gid)::
+            self + {securityContext+: {runAsGroup: gid}},
 
         WithImage(base, version=null)::
             self + {image: if version == null then base else base + ':' + version},
@@ -56,7 +64,7 @@ local object(kind, namespace, name) =
         WithReadOnlyFilesystem()::
             self + {securityContext+: {readOnlyRootFilesystem: true}},
 
-        WithUser(uid)::
+        WithUserID(uid)::
             self + {securityContext+: {
                 runAsNonRoot: uid > 0,
                 runAsUser: uid,
@@ -93,7 +101,7 @@ local object(kind, namespace, name) =
             self + {timeoutSeconds: seconds},
     },
 
-    probeWithHTTPGet(probe, path, port, scheme, headers=null)::
+    probeWithHTTPGet(path, port, scheme, headers=null)::
         local maybeHTTPHeaders =
             if headers != null
             then {httpHeaders: [
@@ -124,6 +132,9 @@ local object(kind, namespace, name) =
 
         WithSelector(labels)::
             self + {spec+: {selector: labels}},
+
+        WithType(type)::
+            self + {spec+: {type: type}},
     },
 
     ServiceAccount(namespace, name):: object('ServiceAccount', namespace, name),

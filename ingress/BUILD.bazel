@@ -1,0 +1,10 @@
+load("@manifesto//bazel:macros.bzl", "k8s_manifest", "k8s_manifests")
+
+k8s_manifests(
+    name = "ingress",
+    create_namespace = True,
+    objects = [
+        k8s_manifest(name = "traefik", src = "traefik.jsonnet")
+    ],
+    visibility = ["@manifesto//:__pkg__"],
+)
