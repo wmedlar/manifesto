@@ -5,6 +5,7 @@ k8s_objects(
     objects = [
         "@manifesto//custom-resources:custom-resources",
         "@manifesto//certificates:certificates",
+        "@manifesto//ingress:ingress",
         "@manifesto//kube-system:kube-system",
     ],
 )
