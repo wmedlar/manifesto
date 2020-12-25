@@ -1,0 +1,12 @@
+load("@manifesto//bazel:macros.bzl", "k8s_manifest", "k8s_manifests")
+
+k8s_manifests(
+    name = "loadbalancing",
+    create_namespace = True,
+    objects = [
+        k8s_manifest(name = "config",     src = "config.jsonnet"),
+        k8s_manifest(name = "controller", src = "controller.jsonnet"),
+        k8s_manifest(name = "speaker",    src = "speaker.jsonnet"),
+    ],
+    visibility = ["@manifesto//:__pkg__"],
+)

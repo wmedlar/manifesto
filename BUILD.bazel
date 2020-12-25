@@ -7,5 +7,6 @@ k8s_objects(
         "@manifesto//certificates:certificates",
         "@manifesto//ingress:ingress",
         "@manifesto//kube-system:kube-system",
+        "@manifesto//loadbalancing:loadbalancing",
     ],
 )

@@ -17,6 +17,11 @@ local object(kind, namespace, name) =
                 containers+: [container],
             }}}},
 
+        WithHostNetworking()::
+            self + {spec+: {template+: {spec+: {
+                hostNetwork: true,
+            }}}},
+
         WithReplicas(count)::
             self + {spec+: {replicas: count}},
 
