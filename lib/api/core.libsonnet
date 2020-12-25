@@ -10,6 +10,11 @@ local object(kind, namespace, name) =
     Group:: group,
     Version:: version,
 
+    ConfigMap(namespace, name):: object('ConfigMap', namespace, name) {
+        WithData(key, value)::
+            self + {data+: {[key]: value}},
+    },
+
     Container(name):: object('Container', null, null) {
         // Containers don't actually include GVK or metadata,
         // so we'll shadow those fields to avoid printing.
@@ -23,14 +28,9 @@ local object(kind, namespace, name) =
         WithArgs(args)::
             self + {args: args},
 
-        WithCapability(cap)::
+        WithCapabilities(add=null, drop=null)::
             self + {securityContext+: {
-                capabilities+: {add+: [cap], drop: ['all']},
-            }},
-
-        WithCapabilities(caps)::
-            self + {securityContext+: {
-                capabilities+: {add: caps, drop: ['all']},
+                capabilities+: {add: add, drop: drop},
             }},
 
         WithEnv(name, value)::
@@ -63,6 +63,12 @@ local object(kind, namespace, name) =
 
         WithReadOnlyFilesystem()::
             self + {securityContext+: {readOnlyRootFilesystem: true}},
+
+        WithResourceLimits(cpu=null, memory=null)::
+            self + {resources+: {limits: {cpu: cpu, memory: memory}}},
+
+        WithResourceRequests(cpu=null, memory=null)::
+            self + {resources+: {requests: {cpu: cpu, memory: memory}}},
 
         WithUserID(uid)::
             self + {securityContext+: {
