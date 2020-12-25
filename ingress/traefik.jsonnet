@@ -73,7 +73,7 @@ local Service =
     .WithPort('http', 80, 'http')
     .WithPort('https', 443, 'http')
     .WithSelector(Deployment.spec.selector.matchLabels)
-    .WithType('NodePort')
+    .WithType('LoadBalancer')
 ;
 
 k8s.core.List([
