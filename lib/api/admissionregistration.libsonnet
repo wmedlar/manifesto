@@ -11,11 +11,59 @@ local object(kind, name) =
     Group:: group,
     Version:: version,
 
-    WebhookConfiguration(kind, name):: object(kind, name) {
-        hello: world,
+    webhook(kind, name):: object(kind, null) {
+        // Webhooks don't actually include GVK or metadata,
+        // so we'll shadow those fields to avoid printing.
+        apiVersion:: super.apiVersion,
+        kind:: super.kind,
+        metadata:: super.metadata,
+        name: name,
+
+        WithAdmissionReviewVersions(versions)::
+            self + {admissionReviewVersions: versions},
+
+        WithNamespaceSelector(key, operator, values)::
+            self + {namespaceSelector+: {matchExpressions+: [{
+                key: key,
+                operator: operator,
+                values: values,
+            }]}},
+
+        WithNoSideEffects()::
+            self + {sideEffects: 'None'},
+
+        WithNoSideEffectsOnDryRun()::
+            self + {sideEffects: 'NoneOnDryRun'},
+
+        WithRule(groups, versions, resources, operations)::
+            self + {rules+: [{
+                apiGroups: groups,
+                apiVersions: versions,
+                resources: resources,
+                operations: operations,
+            }]},
+
+        WithService(service, path)::
+            self + {clientConfig+: {service: {
+                namespace: service.metadata.namespace,
+                name: service.metadata.name,
+                path: path,
+            }}},
     },
 
-    MutatingWebhookConfiguration(name):: WebhookConfiguration('MutatingWebhookConfiguration', name),
+    MutatingWebhook(name):: $.webhook('MutatingWebhook', name),
 
-    ValidatingWebhookConfiguration(name):: WebhookConfiguration('ValidatingWebhookConfiguration', name),
+    MutatingWebhookConfiguration(name):: object('MutatingWebhookConfiguration', name) {
+        WithWebhook(name, func)::
+            local webhook = func($.MutatingWebhook(name));
+            self + {webhooks+: [webhook]},
+    },
+
+    ValidatingWebhook(name):: $.webhook('ValidatingWebhook', name),
+
+    ValidatingWebhookConfiguration(name):: object('ValidatingWebhookConfiguration', name) {
+        WithWebhook(name, func)::
+            local webhook = func($.ValidatingWebhook(name));
+            self + {webhooks+: [webhook]},
+    },
 }
