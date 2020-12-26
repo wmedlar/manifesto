@@ -4,6 +4,7 @@ k8s_objects(
     name = "custom-resources",
     objects = [
         "@manifesto//custom-resources/cert-manager:cert-manager",
+        "@manifesto//custom-resources/traefik:traefik",
     ],
     visibility = ["@manifesto//:__pkg__"],
 )
