@@ -1,4 +1,5 @@
 {
+    admissionregistration: import 'api/admissionregistration.libsonnet',
     apiregistration: import 'api/apiregistration.libsonnet',
     apps: import 'api/apps.libsonnet',
     core: import 'api/core.libsonnet',
