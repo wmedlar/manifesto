@@ -7,10 +7,42 @@ index 09d7b691e..3ca3f0718 100644
      name = "save_docker_version",
      outs = ["version"],
 -    cmd = "grep '^STABLE_DOCKER_TAG ' bazel-out/stable-status.txt | awk '{print $$2}' >$@",
-+    cmd = "echo 1.1.0 > $@",
++    cmd = "echo 0.0.0 > $@",
      stamp = 1,
      visibility = ["//visibility:public"],
  )
+diff --git deploy/charts/cert-manager/templates/_helpers.tpl deploy/charts/cert-manager/templates/_helpers.tpl
+index 89514377b..38e3c8ce1 100644
+--- deploy/charts/cert-manager/templates/_helpers.tpl
++++ deploy/charts/cert-manager/templates/_helpers.tpl
+@@ -60,12 +60,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this
+ If release name contains chart name it will be used as a full name.
+ */}}
+ {{- define "webhook.fullname" -}}
+-{{- $trimmedName := printf "%s" (include "cert-manager.fullname" .) | trunc 55 | trimSuffix "-" -}}
+-{{- printf "%s-webhook" $trimmedName | trunc 63 | trimSuffix "-" -}}
++{{- printf "webhook" -}}
+ {{- end -}}
+
+ {{- define "webhook.caRef" -}}
+-{{ .Release.Namespace}}/{{ template "webhook.fullname" . }}-ca
++{{ .Release.Namespace}}/{{ template "webhook.fullname" . }}-tls
+ {{- end -}}
+
+ {{/*
+diff --git deploy/crds/BUILD.bazel deploy/crds/BUILD.bazel
+index 7308e1232..5e1433655 100644
+--- deploy/crds/BUILD.bazel
++++ deploy/crds/BUILD.bazel
+@@ -77,7 +77,7 @@ genrule(
+     name = "crds.%s" % variant,
+     helm_pkg = ":package.%s" % variant,
+     release_name = "cert-manager",
+-    release_namespace = "cert-manager",
++    release_namespace = "certificates",
+     visibility = ["//visibility:public"],
+ ) for (variant, meta) in variants.items()]
+
 diff --git deploy/manifests/BUILD.bazel deploy/manifests/BUILD.bazel
 index 9350a577f..02490dd45 100644
 --- deploy/manifests/BUILD.bazel
