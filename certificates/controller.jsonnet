@@ -71,7 +71,27 @@ local Deployment =
         .WithImage('quay.io/jetstack/cert-manager-controller', 'v1.0.4')
         .WithArgs([
             '--cluster-resource-namespace=$(POD_NAMESPACE)',
-            '--enable-certificate-owner-ref',
+            // Disable unused controllers to reduce resource usage and apiserver load.
+            // Disabled controllers have been commented out.
+            '--controllers=' + std.join(',', [
+                'challenges',
+                'clusterissuers',
+                // 'ingress-shim',
+                'issuers',
+                'orders',
+                // 'certificaterequests-issuer-acme',
+                'certificaterequests-issuer-ca',
+                'certificaterequests-issuer-selfsigned',
+                // 'certificaterequests-issuer-vault',
+                // 'certificaterequests-issuer-venafi',
+                'CertificateIssuing',
+                'CertificateKeyManager',
+                'CertificateMetrics',
+                'CertificateRequestManager',
+                'CertificateReadiness',
+                'CertificateTrigger',
+            ]),
+            '--enable-certificate-owner-ref=true',
             '--leader-elect=false',
         ])
         .WithEnvFromField('POD_NAMESPACE', 'metadata.namespace')
