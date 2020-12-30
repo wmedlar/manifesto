@@ -74,6 +74,7 @@ local Service =
     .WithPort('https', 443, 'http')
     .WithSelector(Deployment.spec.selector.matchLabels)
     .WithType('LoadBalancer')
+    .WithSpec({externalTrafficPolicy: 'Local'})
 ;
 
 k8s.core.List([
