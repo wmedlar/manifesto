@@ -35,6 +35,13 @@ local object(kind, name) =
         WithNoSideEffectsOnDryRun()::
             self + {sideEffects: 'NoneOnDryRun'},
 
+        WithObjectSelector(key, operator, values)::
+            self + {objectSelector+: {matchExpressions+: [{
+                key: key,
+                operator: operator,
+                values: values,
+            }]}},
+
         WithRule(groups, versions, resources, operations)::
             self + {rules+: [{
                 apiGroups: groups,
