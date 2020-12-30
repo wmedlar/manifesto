@@ -54,7 +54,7 @@ local Deployment =
     .WithServiceAccount(ServiceAccount)
 ;
 local MutatingWebhookConfiguration =
-    k8s.admissionregistration.MutatingWebhookConfiguration(name)
+    k8s.admissionregistration.MutatingWebhookConfiguration('%s:%s' % [namespace, name])
     .WithAnnotation('cert-manager.io/inject-ca-from-secret', Secret.metadata.namespace + '/' + Secret.metadata.name)
     .WithWebhook(
         'webhook.cert-manager.io', function(webhook)
@@ -66,14 +66,15 @@ local MutatingWebhookConfiguration =
     )
 ;
 local ValidatingWebhookConfiguration =
-    k8s.admissionregistration.ValidatingWebhookConfiguration(name)
+    k8s.admissionregistration.ValidatingWebhookConfiguration('%s:%s' % [namespace, name])
     .WithAnnotation('cert-manager.io/inject-ca-from-secret', Secret.metadata.namespace + '/' + Secret.metadata.name)
     .WithWebhook(
         'webhook.cert-manager.io', function(webhook)
             webhook
             .WithAdmissionReviewVersions(['v1', 'v1beta1'])
+            .WithNamespaceSelector('cert-manager.io/disable-validation', 'NotIn', ['true'])
             .WithNoSideEffects()
-            .WithNamespaceSelector('cert-manager.io/disable-validation', 'NotIn', ['true'],)
+            .WithObjectSelector('cert-manager.io/disable-validation', 'NotIn', ['true'])
             .WithRule(['cert-manager.io', 'acme.cert-manager.io'], ['*'], ['*/*'], ['CREATE', 'UPDATE'])
             .WithService(Service, '/validate')
     )
@@ -86,4 +87,5 @@ k8s.core.List([
     Service,
     Deployment,
     MutatingWebhookConfiguration,
+    ValidatingWebhookConfiguration,
 ])
