@@ -1,20 +1,23 @@
+local apiVersion(group, version) =
+    if group == '' then version
+    else group + '/' + version
+;
+
 {
     Object(group, version, kind, namespace, name):: {
-        apiVersion: if group == '' then version else group + '/' + version,
+        internal:: {group:: group, version:: version},
+
+        apiVersion: apiVersion(self.internal.group, self.internal.version),
         kind: kind,
         metadata+: {
             namespace: namespace,
             name: name,
         },
 
-        WithAnnotation(annotation, value)::
-            self + {metadata+: {annotations+: {[annotation]: value}}},
-        WithAnnotations(annotations)::
-            self + {metadata+: {annotations: annotations}},
-        WithLabel(label, value)::
-            self + {metadata+: {labels+: {[label]: value}}},
-        WithLabels(labels)::
-            self + {metadata+: {labels: labels}},
+        WithAnnotation(key, value)::
+            self + {metadata+: {annotations+: {[key]: value}}},
+        WithLabel(key, value)::
+            self + {metadata+: {labels+: {[key]: value}}},
         WithName(name)::
             self + {metadata+: {name: name}},
         WithNamespace(namespace)::

@@ -14,21 +14,21 @@ local ClusterRoleBinding =
 ;
 local AggregatedClusterRoles = [
     k8s.rbac.ClusterRole('%s:%s:issuers' % [namespace, name])
-    .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
+    .WithLabel('rbac.certificates.manifesto/aggregate-to-controller', 'true')
     .WithRule([''], ['secrets'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['cert-manager.io'], ['issuers'], ['get', 'list', 'watch'])
     .WithRule(['cert-manager.io'], ['issuers', 'issuers/status'], ['update']),
 
     k8s.rbac.ClusterRole('%s:%s:clusterissuers' % [namespace, name])
-    .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
+    .WithLabel('rbac.certificates.manifesto/aggregate-to-controller', 'true')
     .WithRule([''], ['secrets'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['cert-manager.io'], ['clusterissuers'], ['get', 'list', 'watch'])
     .WithRule(['cert-manager.io'], ['clusterissuers', 'clusterissuers/status'], ['update']),
 
     k8s.rbac.ClusterRole('%s:%s:certificates' % [namespace, name])
-    .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
+    .WithLabel('rbac.certificates.manifesto/aggregate-to-controller', 'true')
     .WithRule([''], ['secrets'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['acme.cert-manager.io'], ['orders'], ['create', 'delete', 'get', 'list', 'watch'])
@@ -37,7 +37,7 @@ local AggregatedClusterRoles = [
     .WithRule(['cert-manager.io'], ['certificates/finalizers', 'certificaterequests/finalizers'], ['update']),
 
     k8s.rbac.ClusterRole('%s:%s:orders' % [namespace, name])
-    .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
+    .WithLabel('rbac.certificates.manifesto/aggregate-to-controller', 'true')
     .WithRule([''], ['secrets'], ['get', 'list', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['acme.cert-manager.io'], ['challenges', 'orders'], ['get', 'list', 'watch'])
@@ -47,7 +47,7 @@ local AggregatedClusterRoles = [
     .WithRule(['cert-manager.io'], ['clusterissuers', 'issuers'], ['get', 'list', 'watch']),
 
     k8s.rbac.ClusterRole('%s:%s:challenges' % [namespace, name])
-    .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
+    .WithLabel('rbac.certificates.manifesto/aggregate-to-controller', 'true')
     .WithRule([''], ['pods', 'services'], ['create', 'delete', 'get', 'list', 'update', 'watch'])
     .WithRule([''], ['secrets'], ['get', 'list', 'watch'])
     .WithRule([''], ['events'], ['create', 'patch'])
@@ -57,7 +57,7 @@ local AggregatedClusterRoles = [
     .WithRule(['cert-manager.io'], ['clusterissuers', 'issuers'], ['get', 'list', 'watch']),
 
     k8s.rbac.ClusterRole('%s:%s:ingress-shim' % [namespace, name])
-    .WithLabels({'rbac.certificates.manifesto/aggregate-to-controller': 'true'})
+    .WithLabel('rbac.certificates.manifesto/aggregate-to-controller', 'true')
     .WithRule([''], ['events'], ['create', 'patch'])
     .WithRule(['extensions', 'networking.k8s.io'], ['ingresses'], ['get', 'list', 'watch'])
     .WithRule(['extensions', 'networking.k8s.io'], ['ingresses/finalizers'], ['update'])
