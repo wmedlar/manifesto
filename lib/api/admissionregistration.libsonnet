@@ -8,69 +8,69 @@ local object(kind, name) =
     meta.Object(group, version, kind, null, name);
 
 {
-    Group:: group,
-    Version:: version,
+    local sharedWebhookConfiguration(kind, name) = object(kind, name) {
+        internal+:: {webhook+: {name: name}},
+        webhooks: [self.internal.webhook],
 
-    webhook(kind, name):: object(kind, null) {
-        // Webhooks don't actually include GVK or metadata,
-        // so we'll shadow those fields to avoid printing.
-        apiVersion:: super.apiVersion,
-        kind:: super.kind,
-        metadata:: super.metadata,
-        name: name,
-
-        WithAdmissionReviewVersions(versions)::
-            self + {admissionReviewVersions: versions},
-
-        WithNamespaceSelector(key, operator, values)::
-            self + {namespaceSelector+: {matchExpressions+: [{
-                key: key,
-                operator: operator,
-                values: values,
-            }]}},
+        WithSpec(spec)::
+            self + {internal+:: {webhook+: spec}},
 
         WithNoSideEffects()::
-            self + {sideEffects: 'None'},
+            self.WithSpec({sideEffects: 'None'}),
 
         WithNoSideEffectsOnDryRun()::
-            self + {sideEffects: 'NoneOnDryRun'},
+            self.WithSpec({sideEffects: 'NoneOnDryRun'}),
+
+        WithNamespaceSelector(key, operator, values)::
+            self.WithSpec({
+                namespaceSelector+: {
+                    matchExpressions+: [{
+                        key: key,
+                        operator: operator,
+                        values: values,
+                    }],
+                },
+            }),
 
         WithObjectSelector(key, operator, values)::
-            self + {objectSelector+: {matchExpressions+: [{
-                key: key,
-                operator: operator,
-                values: values,
-            }]}},
+            self.WithSpec({
+                objectSelector+: {
+                    matchExpressions+: [{
+                        key: key,
+                        operator: operator,
+                        values: values,
+                    }],
+                },
+            }),
 
         WithRule(groups, versions, resources, operations)::
-            self + {rules+: [{
-                apiGroups: groups,
-                apiVersions: versions,
-                resources: resources,
-                operations: operations,
-            }]},
+            self.WithSpec({
+                rules+: [{
+                    apiGroups: groups,
+                    apiVersions: versions,
+                    resources: resources,
+                    operations: operations,
+                }],
+            }),
 
         WithService(service, path)::
-            self + {clientConfig+: {service: {
-                namespace: service.metadata.namespace,
-                name: service.metadata.name,
-                path: path,
-            }}},
+            self.WithSpec({
+                clientConfig+: {
+                    service+: {
+                        namespace: service.metadata.namespace,
+                        name: service.metadata.name,
+                        path: path,
+                    },
+                },
+            }),
+
+        WithVersions(versions)::
+            self.WithSpec({admissionReviewVersions+: versions}),
     },
 
-    MutatingWebhook(name):: $.webhook('MutatingWebhook', name),
+    MutatingWebhookConfiguration(name)::
+        sharedWebhookConfiguration('MutatingWebhookConfiguration', name),
 
-    MutatingWebhookConfiguration(name):: object('MutatingWebhookConfiguration', name) {
-        WithWebhook(name, func)::
-            local webhook = func($.MutatingWebhook(name));
-            self + {webhooks+: [webhook]},
-    },
-
-    ValidatingWebhook(name):: $.webhook('ValidatingWebhook', name),
-
-    ValidatingWebhookConfiguration(name):: object('ValidatingWebhookConfiguration', name) {
-        WithWebhook(name, func)::
-            local webhook = func($.ValidatingWebhook(name));
-            self + {webhooks+: [webhook]},
-    },
+    ValidatingWebhookConfiguration(name)::
+        sharedWebhookConfiguration('ValidatingWebhookConfiguration', name),
 }

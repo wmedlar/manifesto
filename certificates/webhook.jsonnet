@@ -54,30 +54,22 @@ local Deployment =
     .WithServiceAccount(ServiceAccount)
 ;
 local MutatingWebhookConfiguration =
-    k8s.admissionregistration.MutatingWebhookConfiguration('%s:%s' % [namespace, name])
+    k8s.admissionregistration.MutatingWebhookConfiguration('%s.%s.will.md' % [name, namespace])
     .WithAnnotation('cert-manager.io/inject-ca-from-secret', Secret.metadata.namespace + '/' + Secret.metadata.name)
-    .WithWebhook(
-        'webhook.cert-manager.io', function(webhook)
-            webhook
-            .WithAdmissionReviewVersions(['v1', 'v1beta1'])
-            .WithNoSideEffects()
-            .WithRule(['cert-manager.io', 'acme.cert-manager.io'], ['*'], ['*/*'], ['CREATE', 'UPDATE'])
-            .WithService(Service, '/mutate')
-    )
+    .WithNoSideEffects()
+    .WithRule(['cert-manager.io', 'acme.cert-manager.io'], ['*'], ['*/*'], ['CREATE', 'UPDATE'])
+    .WithService(Service, '/mutate')
+    .WithVersions(['v1', 'v1beta1'])
 ;
 local ValidatingWebhookConfiguration =
-    k8s.admissionregistration.ValidatingWebhookConfiguration('%s:%s' % [namespace, name])
+    k8s.admissionregistration.ValidatingWebhookConfiguration('%s.%s.will.md' % [name, namespace])
     .WithAnnotation('cert-manager.io/inject-ca-from-secret', Secret.metadata.namespace + '/' + Secret.metadata.name)
-    .WithWebhook(
-        'webhook.cert-manager.io', function(webhook)
-            webhook
-            .WithAdmissionReviewVersions(['v1', 'v1beta1'])
-            .WithNamespaceSelector('cert-manager.io/disable-validation', 'NotIn', ['true'])
-            .WithNoSideEffects()
-            .WithObjectSelector('cert-manager.io/disable-validation', 'NotIn', ['true'])
-            .WithRule(['cert-manager.io', 'acme.cert-manager.io'], ['*'], ['*/*'], ['CREATE', 'UPDATE'])
-            .WithService(Service, '/validate')
-    )
+    .WithNamespaceSelector('cert-manager.io/disable-validation', 'NotIn', ['true'])
+    .WithNoSideEffects()
+    .WithObjectSelector('cert-manager.io/disable-validation', 'NotIn', ['true'])
+    .WithRule(['cert-manager.io', 'acme.cert-manager.io'], ['*'], ['*/*'], ['CREATE', 'UPDATE'])
+    .WithService(Service, '/validate')
+    .WithVersions(['v1', 'v1beta1'])
 ;
 
 k8s.core.List([
