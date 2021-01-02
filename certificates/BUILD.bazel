@@ -4,9 +4,9 @@ k8s_manifests(
     name = "certificates",
     create_namespace = True,
     objects = [
+        k8s_manifest(name = "controller", src = "controller.jsonnet"),
         k8s_manifest(name = "authority",  src = "authority.jsonnet"),
         k8s_manifest(name = "cainjector", src = "cainjector.jsonnet"),
-        k8s_manifest(name = "controller", src = "controller.jsonnet"),
         k8s_manifest(name = "webhook",    src = "webhook.jsonnet"),
     ],
     visibility = ["@manifesto//:__pkg__"],
