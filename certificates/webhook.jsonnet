@@ -3,7 +3,7 @@ local namespace = 'certificates';
 local name = 'webhook';
 
 // This Secret doesn't get included, it's only created here to reference throughout.
-local Secret = k8s.core.Secret(namespace, '%s-ca' % name);
+local Secret = k8s.core.Secret(namespace, '%s-tls' % name);
 
 local ServiceAccount = k8s.core.ServiceAccount(namespace, name);
 local Role =
