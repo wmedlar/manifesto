@@ -26,7 +26,7 @@ local Certificate =
         '%s.%s.svc' % [name, namespace],
         '%s.%s.svc.cluster.local' % [name, namespace],
     ])
-    .WithDuration(days=30)
+    .WithDuration(days=90)
     .WithIssuer(k8s.ext.certmanager.ClusterIssuer('internal'))
     .WithSecretName('%s-tls' % name)
 ;
