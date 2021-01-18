@@ -4,5 +4,8 @@
         "bazel-manifesto": true,
         "bazel-out": true,
         "bazel-testlogs": true,
+    },
+    "[jsonnet]": {
+        "editor.rulers": [80]
     }
 }
