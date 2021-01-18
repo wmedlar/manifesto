@@ -1,0 +1,39 @@
+load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_library", "jsonnet_to_json_test")
+
+alias(
+    name = "lib",
+    actual = ":manifesto",
+)
+
+jsonnet_library(
+    name = "manifesto",
+    srcs = ["manifesto.libsonnet"],
+    visibility = ["//visibility:public"],
+    deps = [":internal"],
+)
+
+jsonnet_to_json_test(
+    name = "core.test",
+    src = "core.test.jsonnet",
+    deps = [
+        ":internal",
+        "@jsonnetunit//jsonnetunit",
+    ],
+)
+
+jsonnet_to_json_test(
+    name = "meta.test",
+    src = "meta.test.jsonnet",
+    deps = [
+        ":internal",
+        "@jsonnetunit//jsonnetunit",
+    ],
+)
+
+jsonnet_library(
+    name = "internal",
+    srcs = [
+        "core.libsonnet",
+        "meta.libsonnet",
+    ],
+)
