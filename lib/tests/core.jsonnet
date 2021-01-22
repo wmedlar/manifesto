@@ -1,6 +1,5 @@
 local test = import 'external/jsonnetunit/jsonnetunit/test.libsonnet';
-
-local core = import 'core.libsonnet';
+local core = import 'lib/core.libsonnet';
 
 test.suite({
     testObject: {

@@ -1,7 +1,6 @@
 local test = import 'external/jsonnetunit/jsonnetunit/test.libsonnet';
-
-local core = import 'core.libsonnet';
-local meta = import 'meta.libsonnet';
+local core = import 'lib/core.libsonnet';
+local meta = import 'lib/meta.libsonnet';
 
 test.suite({
     testObjectWithAPIVersionCoreGroup: {
