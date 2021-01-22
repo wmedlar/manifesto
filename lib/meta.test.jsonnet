@@ -50,7 +50,7 @@ test.suite({
         actual: (
             meta.Object
             .WithAnnotation('key', 'value')
-            .WithAnnotation('appended', 'true')
+            .WithAnnotation('merged', 'true')
         ),
         expect: {metadata: {annotations: {key: 'value', appended: 'true'}}},
     },
@@ -63,7 +63,7 @@ test.suite({
         actual: (
             meta.Object
             .WithLabel('key', 'value')
-            .WithLabel('appended', 'true')
+            .WithLabel('merged', 'true')
         ),
         expect: {metadata: {labels: {key: 'value', appended: 'true'}}},
     },

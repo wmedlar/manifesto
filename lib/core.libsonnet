@@ -6,21 +6,59 @@ local meta = import 'meta.libsonnet';
     Object:: meta.Object.WithAPIVersion($.Group, $.Version),
 
     ConfigMap:: $.Object.WithKind('ConfigMap') {
-        WithBinaryData():: self {},
-        WithData():: self {},
-        WithImmutability():: self {},
+        // WithBinaryData sets the binaryData field of this object. The value
+        // should be a base64-encoded string. This can be called multiple times
+        // to add additional data.
+        WithBinaryData(key, value):: self {
+            binaryData+: {[key]: value},
+        },
+
+        // WithData sets the data field of this object. This can be called
+        // multiple times to add additional data.
+        WithData(key, value):: self {
+            data+: {[key]: value},
+        },
+
+        // WithImmutability sets the immutable field of this object. If no
+        // argument is passed, this field will be set to true.
+        WithImmutability(value=true):: self {immutable: value},
     },
 
     Endpoints:: $.Object.WithKind('Endpoints') {},
 
+    Event:: $.Object.WithKind('Event') {},
+
+    LimitRange:: $.Object.WithKind('LimitRange') {},
+
     List:: $.Object.WithKind('List') {
-        Map(func):: self,
-        WithItems(items):: self {},
+        // Map calls a function on each object in the items field and replaces
+        // and replaces it with the return value. This method can be used to
+        // apply common configuration to multiple objects at once.
+        Map(func):: self {
+            items: std.map(func, super.items),
+        },
+
+        // WithItems sets the items field of this object.
+        WithItems(items):: self {items: items},
     },
 
     Namespace:: $.Object.WithKind('Namespace') {
-        WithFinalizer(finalizer):: self {},
+        // WithFinalizer sets the spec.finalizers field of this object. This can
+        // be called multiple times to add additional finalizers.
+        WithFinalizer(finalizer):: self {
+            spec+: {finalizers+: [finalizer]},
+        },
     },
+
+    Node:: $.Object.WithKind('Node') {},
+
+    PersistentVolume:: $.Object.WithKind('PersistentVolume') {},
+
+    PersistentVolumeClaim:: $.Object.WithKind('PersistentVolumeClaim') {},
+
+    Pod:: $.Object.WithKind('Pod') {},
+
+    ResourceQuota:: $.Object.WithKind('ResourceQuota') {},
 
     Secret:: $.Object.WithKind('Secret') {
         Types:: {
@@ -35,15 +73,38 @@ local meta = import 'meta.libsonnet';
             SSHAuth:: 'kubernetes.io/ssh-auth',
             TLS:: 'kubernetes.io/tls',
         },
-        WithData(key, value):: self {},
-        WithStringData(key, value):: self {},
-        WithImmutability(value=true):: self {},
-        WithType(type):: self {},
+
+        // WithData sets the data field of this object. The value should be a
+        // base64-encoded string. This can be called multiple times to add
+        // additional data.
+        WithData(key, value):: self {
+            data+: {[key]: value},
+        },
+
+        // WithImmutability sets the immutable field of this object. If no
+        // argument is passed, this field will be set to true.
+        WithImmutability(value=true):: self {immutable: value},
+
+        // WithStringData sets the stringData field of this object. This can be
+        // called multiple times to add additional data.
+        WithStringData(key, value):: self {
+            stringData+: {[key]: value},
+        },
+
+        // WithType sets the type field of this object. Constants for built-in
+        // types can be found in the hidden Types field.
+        WithType(type):: self {type: type},
     },
 
     Service:: $.Object.WithKind('Service') {
+        TrafficPolicy:: {
+            Default:: self.Cluster,
+            Cluster:: 'Cluster',
+            Local:: 'Local',
+        },
+
         Types:: {
-            Default: self.ClusterIP,
+            Default:: self.ClusterIP,
             // https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
             ClusterIP:: 'ClusterIP',
             ExternalName:: 'ExternalName',
@@ -51,28 +112,45 @@ local meta = import 'meta.libsonnet';
             NodePort:: 'NodePort',
         },
 
-        WithAllocateLoadBalancerNodePorts(value=true):: self {},
-        WithClusterIP(ip):: self {},
-        WithExternalIP(ip):: self {},
-        WithExternalName(name):: self {},
-        WithExternalTrafficPolicy(policy):: self {},
-        WithHealthCheckNodePort(port):: self {},
-        WithIPFamily(family):: self {},
-        WithIPFamilyPolicy(policy):: self {},
-        WithLoadBalancerIP(ip):: self {},
-        WithLoadBalancerSourceRange(range):: self {},
-        WithPort(func):: self {},
-        WithPublishNotReadyAddresses(value=true):: self {},
-        WithSelector(labels):: self {},
-        WithSessionAffinity(affinity):: self {},
-        // WithSessionAffinityConfig
-        WithTopologyKey(key):: self {},
-        WithType(type):: self {},
+        WithAllocateLoadBalancerNodePorts(value=true):: error 'not implemented',
+        WithClusterIP(ip):: error 'not implemented',
+        WithExternalIP(ip):: error 'not implemented',
+        WithExternalName(name):: error 'not implemented',
+
+        // WithExternalTrafficPolicy sets the spec.externalTrafficPolicy field
+        // of this object. Constants for built-in polices can be found in the
+        // hidden TrafficPolicy field.
+        WithExternalTrafficPolicy(policy):: self {
+            spec+: {externalTrafficPolicy: policy},
+        },
+
+        WithHealthCheckNodePort(port):: error 'not implemented',
+        WithIPFamily(family):: error 'not implemented',
+        WithIPFamilyPolicy(policy):: error 'not implemented',
+        WithLoadBalancerIP(ip):: error 'not implemented',
+        WithLoadBalancerSourceRange(range):: error 'not implemented',
+        WithPort(func):: error 'not implemented',
+        WithPublishNotReadyAddresses(value=true):: error 'not implemented',
+
+        // WithSelector sets the spec.selector field of this object.
+        WithSelector(labels):: self {
+            spec+: {selector: labels},
+        },
+
+        WithSessionAffinity(affinity):: error 'not implemented',
+        WithSessionAffinityConfig(config):: error 'not implemented',
+        WithTopologyKey(key):: error 'not implemented',
+
+        // WithType sets the type field of this object. Constants for built-in
+        // types can be found in the hidden Types field.
+        WithType(type):: self {
+            spec+: {type: type},
+        },
     },
 
     ServiceAccount:: $.Object.WithKind('ServiceAccount') {
-        WithAutomountServiceAccountToken(value=true):: self {},
-        WithImagePullSecret(name):: self {},
-        // WithSecret()
+        WithAutomountServiceAccountToken(value=true):: error 'not implemented',
+        WithImagePullSecret(name):: error 'not implemented',
+        WithSecret():: error 'not implemented',
     },
 }
