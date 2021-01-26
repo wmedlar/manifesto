@@ -110,6 +110,10 @@ local meta = import 'meta.libsonnet';
             spec+: {automountServiceAccountToken: value},
         },
 
+        // WithContainer sets the spec.containers field of this object. If a
+        // function is passed as the argument, it is called with an empty
+        // core.Container and the field is set to its return value, otherwise
+        // the argument is used directly.
         WithContainer(value):: self {
             spec+: {
                 containers+: [
@@ -143,6 +147,10 @@ local meta = import 'meta.libsonnet';
         WithHostname():: error 'not implemented',
         WithImagePullSecret():: error 'not implemented',
 
+        // WithInitContainer sets the spec.initContainers field of this object.
+        // If a function is passed as the argument, it is called with an empty
+        // core.Container and the field is set to its return value, otherwise
+        // the argument is used directly.
         WithInitContainer(value):: self {
             spec+: {
                 initContainers+: [
