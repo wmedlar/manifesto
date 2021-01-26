@@ -62,7 +62,6 @@ local meta = import 'meta.libsonnet';
 
     Secret:: $.Object.WithKind('Secret') {
         Types:: {
-            Default:: self.Opaque,
             // https://kubernetes.io/docs/concepts/configuration/secret/#secret-types
             Opaque:: 'Opaque',
             BasicAuth:: 'kubernetes.io/basic-auth',
@@ -92,19 +91,17 @@ local meta = import 'meta.libsonnet';
         },
 
         // WithType sets the type field of this object. Constants for built-in
-        // types can be found in the hidden Types field.
+        // types can be found in the hidden Type field.
         WithType(type):: self {type: type},
     },
 
     Service:: $.Object.WithKind('Service') {
         TrafficPolicy:: {
-            Default:: self.Cluster,
             Cluster:: 'Cluster',
             Local:: 'Local',
         },
 
-        Types:: {
-            Default:: self.ClusterIP,
+        Type:: {
             // https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
             ClusterIP:: 'ClusterIP',
             ExternalName:: 'ExternalName',
