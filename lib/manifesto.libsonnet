@@ -10,6 +10,7 @@
     PersistentVolume:: core.PersistentVolume,
     PersistentVolumeClaim:: core.PersistentVolumeClaim,
     Pod:: core.Pod,
+    PodTemplate:: core.PodTemplate,
     ResourceQuota:: core.ResourceQuota,
     Secret:: core.Secret,
     Service:: core.Service,

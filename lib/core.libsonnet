@@ -85,7 +85,96 @@ local meta = import 'meta.libsonnet';
 
     PersistentVolumeClaim:: $.Object.WithKind('PersistentVolumeClaim') {},
 
-    Pod:: $.Object.WithKind('Pod') {},
+    Pod:: $.Object.WithKind('Pod') {
+        DNSPolicy:: {
+            // https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+            ClusterFirst:: 'ClusterFirst',
+            ClusterFirstWithHostNet:: 'ClusterFirstWithHostNet',
+            Default:: 'Default',
+            None:: 'None',
+        },
+
+        // WithActiveDeadlineSeconds sets the spec.activeDeadlineSeconds field
+        // of this object.
+        WithActiveDeadlineSeconds(value):: self {
+            spec+: {activeDeadlineSeconds: value},
+        },
+
+
+        WithAffinity():: error 'not implemented',
+
+        // WithAutomountServiceAccountToken sets the
+        // spec.automountServiceAccountToken field of this object. If no
+        // argument is passed, the field will be set to true.
+        WithAutomountServiceAccountToken(value=true):: self {
+            spec+: {automountServiceAccountToken: value},
+        },
+
+        WithContainer(value):: self {
+            spec+: {
+                containers+: [
+                    if std.isFunction(value)
+                    then value($.Container)
+                    else value,
+                ],
+            },
+        },
+
+        WithDNSConfig():: error 'not implemented',
+        WithDNSPolicy():: error 'not implemented',
+
+        // WithEnableServiceLinks sets the spec.enableServiceLinks field of this
+        // object. If no argument is passed, the field will be set to true.
+        WithEnableServiceLinks(value=true):: self {
+            spec+: {enableServiceLinks: value},
+        },
+
+        // WithHostAlias sets the spec.hostAliases field of this object. This
+        // can be called multiple times to add additional aliases.
+        WithHostAlias(ip, hostnames):: self {
+            spec+: {
+                hostAliases+: [{ip: ip, hostnames: hostnames}],
+            },
+        },
+
+        WithHostIPC():: error 'not implemented',
+        WithHostNetwork():: error 'not implemented',
+        WithHostPID():: error 'not implemented',
+        WithHostname():: error 'not implemented',
+        WithImagePullSecret():: error 'not implemented',
+
+        WithInitContainer(value):: self {
+            spec+: {
+                initContainers+: [
+                    if std.isFunction(value)
+                    then value($.Container)
+                    else value,
+                ],
+            },
+        },
+
+        WithNodeName():: error 'not implemented',
+        WithNodeSelector():: error 'not implemented',
+        WithOverhead():: error 'not implemented',
+        WithPreemptionPolicy():: error 'not implemented',
+        WithPriority():: error 'not implemented',
+        WithPriorityClassName():: error 'not implemented',
+        WithReadinessGate():: error 'not implemented',
+        WithRestartPolicy():: error 'not implemented',
+        WithRuntimeClassName():: error 'not implemented',
+        WithSchedulerName():: error 'not implemented',
+        WithSecurityContext():: error 'not implemented',
+        WithServiceAccountName():: error 'not implemented',
+        WithSetHostnameAsFQDN(value=true):: error 'not implemented',
+        WithShareProcessNamespace(value=true):: error 'not implemented',
+        WithSubdomain():: error 'not implemented',
+        WithTerminationGracePeriodSeconds():: error 'not implemented',
+        WithToleration():: error 'not implemented',
+        WithTopologySpreadConstraint():: error 'not implemented',
+        WithVolume():: error 'not implemented',
+    },
+
+    PodTemplate:: $.Pod.WithoutTypeMeta() {},
 
     ResourceQuota:: $.Object.WithKind('ResourceQuota') {},
 

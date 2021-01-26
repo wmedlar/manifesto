@@ -144,6 +144,174 @@ test.suite({
         actual: core.Pod,
         expect: {apiVersion: 'v1', kind: 'Pod'},
     },
+    testPodWithActiveDeadlineSeconds: {
+        actual: core.Pod.WithActiveDeadlineSeconds(1),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {activeDeadlineSeconds: 1},
+        },
+    },
+    testPodWithActiveDeadlineSecondsOverwritesExisting: {
+        actual: (
+            core.Pod
+            .WithActiveDeadlineSeconds(69)
+            .WithActiveDeadlineSeconds(1)
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {activeDeadlineSeconds: 1},
+        },
+    },
+    testPodWithAutomountServiceAccountToken: {
+        actual: core.Pod.WithAutomountServiceAccountToken(true),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {automountServiceAccountToken: true},
+        },
+    },
+    testPodWithAutomountServiceAccountTokenOverwritesExisting: {
+        actual: (
+            core.Pod
+            .WithAutomountServiceAccountToken(false)
+            .WithAutomountServiceAccountToken(true)
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {automountServiceAccountToken: true},
+        },
+    },
+    testPodWithContainer: {
+        actual: core.Pod.WithContainer({key: 'value'}),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                containers: [{key: 'value'}],
+            },
+        },
+    },
+    testPodWithContainerFunction: {
+        actual: core.Pod.WithContainer(function(obj) obj {key: 'value'}),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                containers: [{key: 'value'}],
+            },
+        },
+    },
+    testPodWithContainerAppendsExisting: {
+        actual: (
+            core.Pod
+            .WithContainer({key: 'value'})
+            .WithContainer({appended: true})
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                containers: [
+                    {key: 'value'},
+                    {appended: true},
+                ],
+            },
+        },
+    },
+    testPodWithEnableServiceLinks: {
+        actual: core.Pod.WithEnableServiceLinks(true),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {enableServiceLinks: true},
+        },
+    },
+    testPodWithEnableServiceLinksOverwritesExisting: {
+        actual: (
+            core.Pod
+            .WithEnableServiceLinks(false)
+            .WithEnableServiceLinks(true)
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {enableServiceLinks: true},
+        },
+    },
+    testPodWithHostAlias: {
+        actual: core.Pod.WithHostAlias('1.2.3.4', ['test']),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                hostAliases: [
+                    {ip: '1.2.3.4', hostnames: ['test']},
+                ],
+            },
+        },
+    },
+    testPodWithHostAliasAppendsExisting: {
+        actual: (
+            core.Pod
+            .WithHostAlias('1.2.3.4', ['test'])
+            .WithHostAlias('5.6.7.7', ['appended', 'host'])
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                hostAliases: [
+                    {ip: '1.2.3.4', hostnames: ['test']},
+                    {ip: '5.6.7.7', hostnames: ['appended', 'host']},
+                ],
+            },
+        },
+    },
+    testPodWithInitContainer: {
+        actual: core.Pod.WithInitContainer({key: 'value'}),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                initContainers: [{key: 'value'}],
+            },
+        },
+    },
+    testPodWithInitContainerFunction: {
+        actual: core.Pod.WithInitContainer(function(obj) obj {key: 'value'}),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                initContainers: [{key: 'value'}],
+            },
+        },
+    },
+    testPodWithInitContainerAppendsExisting: {
+        actual: (
+            core.Pod
+            .WithInitContainer({key: 'value'})
+            .WithInitContainer({appended: true})
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'Pod',
+            spec: {
+                initContainers: [
+                    {key: 'value'},
+                    {appended: true},
+                ],
+            },
+        },
+    },
+
+    testPodTemplate: {
+        actual: core.PodTemplate,
+        expect: {},  // type meta is hidden
+    },
 
     testResourceQuota: {
         actual: core.ResourceQuota,
