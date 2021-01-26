@@ -53,7 +53,11 @@ test.suite({
     },
     testConfigMapWithImmutability: {
         actual: core.ConfigMap.WithImmutability(true),
-        expect: {apiVersion: 'v1', kind: 'ConfigMap', immutable: true},
+        expect: {
+            apiVersion: 'v1',
+            kind: 'ConfigMap',
+            immutable: true,
+        },
     },
     testConfigMapWithImmutabilityOverwritesExisting: {
         actual: (
@@ -61,7 +65,28 @@ test.suite({
             .WithImmutability(true)
             .WithImmutability(false)
         ),
-        expect: {apiVersion: 'v1', kind: 'ConfigMap', immutable: false},
+        expect: {
+            apiVersion: 'v1',
+            kind: 'ConfigMap',
+            immutable: false,
+        },
+    },
+
+    testContainer: {
+        actual: core.Container,
+        expect: {},  // type meta is hidden
+    },
+    testContainerWithName: {
+        actual: core.Container.WithName('test'),
+        expect: {name: 'test'},
+    },
+    testContainerWithNameOverrwrites: {
+        actual: (
+            core.Container
+            .WithName('overwritten')
+            .WithName('test')
+        ),
+        expect: {name: 'test'},
     },
 
     testEndpoints: {
@@ -84,12 +109,24 @@ test.suite({
         expect: {apiVersion: 'v1', kind: 'List'},
     },
     testListMap: {
-        actual: core.List.WithItems(['a', 'b', 'c']).Map(std.codepoint),
-        expect: {apiVersion: 'v1', kind: 'List', items: [97, 98, 99]},
+        actual: (
+            core.List
+            .WithItems(['a', 'b', 'c'])
+            .Map(std.codepoint)
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'List',
+            items: [97, 98, 99],
+        },
     },
     testListWithItems: {
         actual: core.List.WithItems(['a', 'b', 'c']),
-        expect: {apiVersion: 'v1', kind: 'List', items: ['a', 'b', 'c']},
+        expect: {
+            apiVersion: 'v1',
+            kind: 'List',
+            items: ['a', 'b', 'c'],
+        },
     },
     testListWithItemsOverwritesExisting: {
         actual: (
@@ -97,7 +134,11 @@ test.suite({
             .WithItems(['over', 'written'])
             .WithItems(['a', 'b', 'c'])
         ),
-        expect: {apiVersion: 'v1', kind: 'List', items: ['a', 'b', 'c']},
+        expect: {
+            apiVersion: 'v1',
+            kind: 'List',
+            items: ['a', 'b', 'c'],
+        },
     },
 
     testNamespace: {

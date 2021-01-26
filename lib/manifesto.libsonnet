@@ -1,6 +1,7 @@
 {
     local core = import 'core.libsonnet',
     ConfigMap:: core.ConfigMap,
+    Container:: core.Container,
     Endpoints:: core.Endpoints,
     Event:: core.Event,
     LimitRange:: core.LimitRange,
