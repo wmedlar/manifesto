@@ -126,4 +126,17 @@ test.suite({
         actual: meta.Object.WithNamespace('test').Namespace(),
         expect: 'test',
     },
+
+    testObjectWithoutTypeMeta: {
+        actual: meta.Object.WithoutTypeMeta(),
+        expect: {},
+    },
+    testObjectWithoutTypeMetaHidesAPIVersion: {
+        actual: meta.Object.WithAPIVersion('test', 'v1').WithoutTypeMeta(),
+        expect: {},
+    },
+    testObjectWithoutTypeMetaHidesKind: {
+        actual: meta.Object.WithKind('test').WithoutTypeMeta(),
+        expect: {},
+    },
 })

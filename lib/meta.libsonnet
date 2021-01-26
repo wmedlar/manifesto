@@ -58,5 +58,13 @@ local core = import 'core.libsonnet';
 
             Namespace():: namespace,
         },
+
+        // WithoutTypeMeta hides the apiVersion and kind fields of this object.
+        // This method is useful to embed one object into another where type
+        // information is unnecessary.
+        WithoutTypeMeta():: self {
+            apiVersion:: super.apiVersion,
+            kind:: super.kind,
+        },
     },
 }
