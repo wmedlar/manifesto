@@ -43,7 +43,11 @@ test.suite({
 
     testObjectWithAnnotation: {
         actual: meta.Object.WithAnnotation('key', 'value'),
-        expect: {metadata: {annotations: {key: 'value'}}},
+        expect: {
+            metadata: {
+                annotations: {key: 'value'},
+            },
+        },
     },
     testObjectWithAnnotationMergesExisting: {
         actual: (
@@ -51,12 +55,20 @@ test.suite({
             .WithAnnotation('key', 'value')
             .WithAnnotation('merged', 'true')
         ),
-        expect: {metadata: {annotations: {key: 'value', appended: 'true'}}},
+        expect: {
+            metadata: {
+                annotations: {key: 'value', merged: 'true'},
+            },
+        },
     },
 
     testObjectWithLabel: {
         actual: meta.Object.WithLabel('key', 'value'),
-        expect: {metadata: {labels: {key: 'value'}}},
+        expect: {
+            metadata: {
+                labels: {key: 'value'},
+            },
+        },
     },
     testObjectWithLabelMergesExisting: {
         actual: (
@@ -64,13 +76,19 @@ test.suite({
             .WithLabel('key', 'value')
             .WithLabel('merged', 'true')
         ),
-        expect: {metadata: {labels: {key: 'value', appended: 'true'}}},
+        expect: {
+            metadata: {
+                labels: {key: 'value', merged: 'true'},
+            },
+        },
     },
 
     // Test default behavior of Object.WithName.
     testObjectWithName: {
         actual: meta.Object.WithName('test'),
-        expect: {metadata: {name: 'test'}},
+        expect: {
+            metadata: {name: 'test'},
+        },
     },
     testObjectWithNameOverwritesExisting: {
         actual: (
@@ -78,7 +96,9 @@ test.suite({
             .WithName('ovewritten')
             .WithName('test')
         ),
-        expect: {metadata: {name: 'test'}},
+        expect: {
+            metadata: {name: 'test'},
+        },
     },
     testObjectWithNameProvidesNameMethod: {
         actual: meta.Object.WithName('test').Name(),
@@ -87,7 +107,9 @@ test.suite({
     // Test behavior of Object.WithName(..., generate=true).
     testObjectWithNameGenerateTrue: {
         actual: meta.Object.WithName('test', generate=true),
-        expect: {metadata: {generateName: 'test'}},
+        expect: {
+            metadata: {generateName: 'test'},
+        },
     },
     testObjectWithNameGenerateTrueOverwritesExisting: {
         actual: (
@@ -95,15 +117,19 @@ test.suite({
             .WithName('ovewritten', generate=true)
             .WithName('test', generate=true)
         ),
-        expect: {metadata: {generateName: 'test'}},
+        expect: {
+            metadata: {generateName: 'test'},
+        },
     },
     testObjectWithNameGenerateMixedMergesExisting: {
         actual: (
             meta.Object
-            .WithName('name')
-            .WithName('generate', generate=true)
+            .WithName('test')
+            .WithName('merged', generate=true)
         ),
-        expect: {metadata: {generateName: 'generate', name: 'name'}},
+        expect: {
+            metadata: {generateName: 'merged', name: 'test'},
+        },
     },
     testObjectWithNameGenerateTrueProvidesNameMethod: {
         actual: meta.Object.WithName('test', generate=true).Name(),
@@ -112,7 +138,9 @@ test.suite({
 
     testObjectWithNamespace: {
         actual: meta.Object.WithNamespace('test'),
-        expect: {metadata: {namespace: 'test'}},
+        expect: {
+            metadata: {namespace: 'test'},
+        },
     },
     testObjectWithNamespaceOverwritesExisting: {
         actual: (
@@ -120,7 +148,9 @@ test.suite({
             .WithNamespace('overwritten')
             .WithNamespace('test')
         ),
-        expect: {metadata: {namespace: 'test'}},
+        expect: {
+            metadata: {namespace: 'test'},
+        },
     },
     testObjectWithNamespaceProvidesNamespaceMethod: {
         actual: meta.Object.WithNamespace('test').Namespace(),

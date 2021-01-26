@@ -24,6 +24,35 @@ local meta = import 'meta.libsonnet';
         WithImmutability(value=true):: self {immutable: value},
     },
 
+    Container:: $.Object.WithKind('Container').WithoutTypeMeta() {
+        WithArg():: error 'not implemented',
+        WithArgs():: error 'not implemented',
+        WithCommand():: error 'not implemented',
+        WithEnv():: error 'not implemented',
+        WithEnvFrom():: error 'not implemented',
+        WithImage():: error 'not implemented',
+        WithImagePullPolicy():: error 'not implemented',
+        WithLifecycle():: error 'not implemented',
+        WithLivenessProbe():: error 'not implemented',
+
+        // WithName sets the name field of this object.
+        WithName(name):: self {name: name},
+
+        WithPort():: error 'not implemented',
+        WithReadinessProbe():: error 'not implemented',
+        WithResources():: error 'not implemented',
+        WithSecurityContext():: error 'not implemented',
+        WithStartupProbe():: error 'not implemented',
+        WithStdin(value=true):: error 'not implemented',
+        WithStdinOnce(value=true):: error 'not implemented',
+        WithTerminationMessagePath(path):: error 'not implemented',
+        WithTerminationMessagePolicy(policy):: error 'not implemented',
+        WithTTY(value=true):: error 'not implemented',
+        WithVolumeDevice():: error 'not implemented',
+        WithVolumeMount():: error 'not implemented',
+        WithWorkingDirectory(path):: error 'not implemented',
+    },
+
     Endpoints:: $.Object.WithKind('Endpoints') {},
 
     Event:: $.Object.WithKind('Event') {},
