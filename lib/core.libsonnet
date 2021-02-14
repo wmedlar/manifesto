@@ -67,6 +67,10 @@ local meta = import 'meta.libsonnet';
             items: std.map(func, super.items),
         },
 
+        // WithItem sets the items field of this object. This can be called
+        // multiple times to add additional items.
+        WithItem(item):: self {items+: [item]},
+
         // WithItems sets the items field of this object.
         WithItems(items):: self {items: items},
     },
@@ -227,7 +231,7 @@ local meta = import 'meta.libsonnet';
             Local:: 'Local',
         },
 
-        Type:: {
+        Types:: {
             // https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
             ClusterIP:: 'ClusterIP',
             ExternalName:: 'ExternalName',
@@ -252,7 +256,9 @@ local meta = import 'meta.libsonnet';
         WithIPFamilyPolicy(policy):: error 'not implemented',
         WithLoadBalancerIP(ip):: error 'not implemented',
         WithLoadBalancerSourceRange(range):: error 'not implemented',
-        WithPort(func):: error 'not implemented',
+
+        WithPort(name, port, protocol=null):: error 'not implemented',
+
         WithPublishNotReadyAddresses(value=true):: error 'not implemented',
 
         // WithSelector sets the spec.selector field of this object.

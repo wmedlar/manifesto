@@ -3,6 +3,21 @@ load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_to_json")
 load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
 load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 
+def external_binary(name, darwin, linux, **kwargs):
+    native.genrule(
+        name = name,
+        srcs = select({
+            "@bazel_tools//src/conditions:darwin": [darwin],
+            "//conditions:default": [linux],
+        }),
+        outs = ["bin/%s" % name],
+        cmd = "mv $(SRCS) $@",
+        executable = True,
+        **kwargs,
+    )
+    return name
+
+
 def k8s_json(name, src, **kwargs):
     jsonnet_to_json(
         name = name,

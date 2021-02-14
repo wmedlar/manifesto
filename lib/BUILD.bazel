@@ -17,5 +17,6 @@ jsonnet_library(
     srcs = [
         "core.libsonnet",
         "meta.libsonnet",
+        "rbac.libsonnet",
     ],
 )

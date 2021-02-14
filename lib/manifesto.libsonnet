@@ -1,4 +1,11 @@
 {
+    local apps = import 'apps.libsonnet',
+    ControllerRevision:: apps.ControllerRevision,
+    DaemonSet:: apps.DaemonSet,
+    Deployment:: apps.Deployment,
+    ReplicaSet:: apps.ReplicaSet,
+    StatefulSet:: apps.StatefulSet,
+
     local core = import 'core.libsonnet',
     ConfigMap:: core.ConfigMap,
     Container:: core.Container,
@@ -16,4 +23,10 @@
     Secret:: core.Secret,
     Service:: core.Service,
     ServiceAccount:: core.ServiceAccount,
+
+    local rbac = import 'rbac.libsonnet',
+    ClusterRole:: rbac.ClusterRole,
+    ClusterRoleBinding:: rbac.ClusterRoleBinding,
+    Role:: rbac.Role,
+    RoleBinding:: rbac.RoleBinding,
 }

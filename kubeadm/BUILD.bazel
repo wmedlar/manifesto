@@ -1,0 +1,7 @@
+load("@manifesto//bazel:macros.bzl", "k8s_manifest")
+
+k8s_manifest(
+    name = "kubeadm",
+    src = "kubeadm.jsonnet",
+    visibility = ["@manifesto//:__pkg__"],
+)

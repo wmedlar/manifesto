@@ -120,6 +120,26 @@ test.suite({
             items: [97, 98, 99],
         },
     },
+    testListWithItem: {
+        actual: core.List.WithItem('test'),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'List',
+            items: ['test'],
+        },
+    },
+    testListWithItemAppendsExisting: {
+        actual: (
+            core.List
+            .WithItem('test')
+            .WithItem('appended')
+        ),
+        expect: {
+            apiVersion: 'v1',
+            kind: 'List',
+            items: ['test', 'appended'],
+        },
+    },
     testListWithItems: {
         actual: core.List.WithItems(['a', 'b', 'c']),
         expect: {

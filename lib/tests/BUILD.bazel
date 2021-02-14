@@ -17,3 +17,12 @@ jsonnet_to_json_test(
         "@jsonnetunit//jsonnetunit",
     ],
 )
+
+jsonnet_to_json_test(
+    name = "rbac",
+    src = "rbac.jsonnet",
+    deps = [
+        "//lib",
+        "@jsonnetunit//jsonnetunit",
+    ],
+)

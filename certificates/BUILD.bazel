@@ -1,13 +1,31 @@
+load("@io_bazel_rules_jsonnet//jsonnet:jsonnet.bzl", "jsonnet_to_json")
 load("@manifesto//bazel:macros.bzl", "k8s_manifest", "k8s_manifests")
+
+alias(
+    name = "apply",
+    actual = ":certificates.apply",
+)
 
 k8s_manifests(
     name = "certificates",
     create_namespace = True,
     objects = [
-        k8s_manifest(name = "controller", src = "controller.jsonnet"),
-        k8s_manifest(name = "authority",  src = "authority.jsonnet"),
-        k8s_manifest(name = "cainjector", src = "cainjector.jsonnet"),
-        k8s_manifest(name = "webhook",    src = "webhook.jsonnet"),
+        k8s_manifest(name = "controller", src = "controller.json"),
+        k8s_manifest(name = "issuers",    src = "issuers.json"),
+        k8s_manifest(name = "cainjector", src = "cainjector.json"),
+        k8s_manifest(name = "webhook",    src = "webhook.json"),
     ],
-    visibility = ["@manifesto//:__pkg__"],
+    visibility = ["//:__pkg__"],
+)
+
+jsonnet_to_json(
+    name = "manifests",
+    src = "main.jsonnet",
+    outs = [
+        "cainjector.json",
+        "controller.json",
+        "issuers.json",
+        "webhook.json",
+    ],
+    deps = ["//certificates/lib"],
 )

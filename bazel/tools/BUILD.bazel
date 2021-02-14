@@ -1,0 +1,8 @@
+load("@manifesto//bazel:macros.bzl", "external_binary")
+
+external_binary(
+    name   = "buildifier",
+    darwin = "@buildifier.darwin//file",
+    linux  = "@buildifier.linux//file",
+    visibility = ["@manifesto//:__subpackages__"],
+)

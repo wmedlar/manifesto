@@ -5,3 +5,6 @@ manifesto_repositories()
 
 load("@manifesto//bazel:deps.bzl", "manifesto_dependencies")
 manifesto_dependencies()
+
+load("@manifesto//bazel/tools:install.bzl", "manifesto_tools")
+manifesto_tools()
